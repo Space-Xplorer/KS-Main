@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+supabase
+qrcode
+pillow
+python-dotenv
+pydantic
