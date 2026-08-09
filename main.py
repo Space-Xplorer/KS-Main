@@ -3,7 +3,12 @@ import io
 import base64
 import traceback
 import qrcode
-from fastapi import FastAPI, HTTPException
+import smtplib
+import tempfile
+
+from email.message import EmailMessage
+from fastapi import FastAPI, BackgroundTasks, HTTPException
+from email_service import send_qr_email
 from pydantic import BaseModel
 from supabase import create_client, Client
 from dotenv import load_dotenv
@@ -34,7 +39,10 @@ def read_root():
     return {"message": "Skill Swap Registration API is running"}
 
 @app.post("/api/register")
-def register_participant(participant: ParticipantRegister):
+def register_participant(
+    participant: ParticipantRegister, 
+    background_tasks: BackgroundTasks
+):
     try:
         # 1. Insert participant into Supabase
         response = supabase.table("participants").insert({
@@ -61,14 +69,29 @@ def register_participant(participant: ParticipantRegister):
 
         img = qr.make_image(fill_color="black", back_color="white")
 
-        # 3. Save image to byte stream and encode as Base64 string
+        # 3. Save image to byte stream & write to temp file for email attachment
         buffer = io.BytesIO()
         img.save(buffer, format="PNG")
-        qr_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+        qr_bytes = buffer.getvalue()
+        
+        qr_base64 = base64.b64encode(qr_bytes).decode("utf-8")
+
+        # Create temporary PNG file to send as attachment
+        temp_qr_path = os.path.join(tempfile.gettempdir(), f"qr_{unique_id}.png")
+        with open(temp_qr_path, "wb") as f:
+            f.write(qr_bytes)
+
+        # 4. Trigger email sending in background
+        background_tasks.add_task(
+            send_qr_email,
+            recipient_email=participant.email,
+            name=participant.name,
+            qr_image_path=temp_qr_path
+        )
 
         return {
             "status": "success",
-            "message": "Participant registered successfully",
+            "message": "Participant registered successfully and email queued",
             "unique_id": unique_id,
             "qr_code_base64": f"data:image/png;base64,{qr_base64}",
             "data": registered_user
@@ -79,7 +102,7 @@ def register_participant(participant: ParticipantRegister):
         traceback.print_exc()
         print("-------------------------------\n")
         raise HTTPException(status_code=500, detail=str(e))
-
+    
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
