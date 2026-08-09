@@ -1,5 +1,7 @@
 import os
 import io
+import base64
+import traceback
 import qrcode
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -31,12 +33,10 @@ class ParticipantRegister(BaseModel):
 def read_root():
     return {"message": "Skill Swap Registration API is running"}
 
-import traceback
-
 @app.post("/api/register")
 def register_participant(participant: ParticipantRegister):
     try:
-        # PostgreSQL generates unique_id automatically via DEFAULT
+        # 1. Insert participant into Supabase
         response = supabase.table("participants").insert({
             "name": participant.name,
             "email": participant.email,
@@ -47,11 +47,30 @@ def register_participant(participant: ParticipantRegister):
             raise HTTPException(status_code=400, detail="Failed to insert participant")
 
         registered_user = response.data[0]
+        unique_id = registered_user.get("unique_id") or registered_user.get("id")
+
+        # 2. Generate QR Code in memory using qrcode + pillow
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(unique_id)
+        qr.make(fit=True)
+
+        img = qr.make_image(fill_color="black", back_color="white")
+
+        # 3. Save image to byte stream and encode as Base64 string
+        buffer = io.BytesIO()
+        img.save(buffer, format="PNG")
+        qr_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
 
         return {
             "status": "success",
             "message": "Participant registered successfully",
-            "unique_id": registered_user.get("unique_id"),
+            "unique_id": unique_id,
+            "qr_code_base64": f"data:image/png;base64,{qr_base64}",
             "data": registered_user
         }
 
