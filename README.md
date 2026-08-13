@@ -1,6 +1,6 @@
 # KS-Main
 
-Club platform for the **VNRVJIET Space Club** (Kakṣyā Śāstra).
+Club platform for the **VNRVJIET Space Club** (Kakşyā Śāstra).
 
 Current build target is the QR-based attendance system — online
 pre-registration, on-site walk-in registration, and multi-lane check-in that

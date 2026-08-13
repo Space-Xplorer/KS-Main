@@ -1,69 +1,76 @@
-import Image from "next/image";
+import { CLUBS, EVENTS, FEST } from "@/content/celestra";
+import { About } from "@/features/celestra/about";
+import { Contact } from "@/features/celestra/contact";
+import { Events } from "@/features/celestra/events";
+import { Facts } from "@/features/celestra/facts";
+import { Hero } from "@/features/celestra/hero";
+import { OfficialPoster } from "@/features/celestra/official-poster";
+import { Partner } from "@/features/celestra/partner";
+import { SiteHeader } from "@/features/celestra/site-header";
+import { ThemeMarquee } from "@/features/celestra/theme-marquee";
 
-export default function Home() {
+/**
+ * Celestra — I landing page.
+ *
+ * Fully static: no data fetching, no client JS beyond the mobile nav, so it
+ * loads on venue wifi. Content lives in src/content/celestra.ts.
+ */
+/**
+ * schema.org Event data, so the fest can surface as a rich result with real
+ * dates and a venue rather than a plain blue link. Generated from the same
+ * content source as the page, so the two cannot drift.
+ *
+ * Note: "organizer" is spelled the American way on purpose — it is a
+ * schema.org property name, not prose. The rest of the site is British English.
+ */
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Festival",
+  name: `${FEST.name} ${FEST.edition}`,
+  description: FEST.intro,
+  startDate: FEST.startIso,
+  endDate: FEST.endIso,
+  eventStatus: "https://schema.org/EventScheduled",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: {
+    "@type": "Place",
+    name: FEST.institutionFull,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Hyderabad",
+      addressRegion: "Telangana",
+      addressCountry: "IN",
+    },
+  },
+  organizer: FEST.hosts.map((name) => ({ "@type": "Organization", name })),
+  subEvent: EVENTS.map((event) => ({
+    "@type": "Event",
+    name: event.title,
+    ...(event.description ? { description: event.description } : {}),
+    location: { "@type": "Place", name: event.venue },
+    organizer: { "@type": "Organization", name: CLUBS[event.club].name },
+  })),
+};
+
+export default function Page() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <script
+        type="application/ld+json"
+        // Content is our own static data, not user input.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
+      <SiteHeader />
+      <main id="main">
+        <Hero />
+        <OfficialPoster />
+        <Facts />
+        <ThemeMarquee />
+        <Events />
+        <About />
+        <Partner />
+        <Contact />
       </main>
-    </div>
+    </>
   );
 }

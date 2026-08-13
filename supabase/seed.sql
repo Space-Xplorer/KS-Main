@@ -4,7 +4,7 @@
 insert into public.events (id, title, description, starts_at, venue, registration_open)
 values (
   '3f2504e0-4f89-41d3-9a0c-0305e82c3301',
-  'Kakṣyā Śāstra — Dry Run',
+  'Kakşyā Śāstra — Dry Run',
   'Local development event. Use this id when testing the scanner.',
   now() + interval '7 days',
   'VNRVJIET Campus',

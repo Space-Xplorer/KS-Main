@@ -1,4 +1,4 @@
--- Kakṣyā Śāstra — initial schema
+-- Kakşyā Śāstra — initial schema
 --
 -- Replaces the earlier prototype model (participants + attendance keyed on a
 -- guessable "SWAP-1004" text id) with UUID-keyed registrations and a check-in

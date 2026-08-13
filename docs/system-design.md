@@ -1,4 +1,4 @@
-# Kakṣyā Śāstra — Club Platform System Design
+# Kakşyā Śāstra — Club Platform System Design
 
 **Prepared for:** VNRVJIET Space Club, MVP target = 3rd week of August 2026
 **Status:** v2 — Phase 1 scope locked to the QR-based attendance system (registration + check-in), designed offline-first for venue conditions.

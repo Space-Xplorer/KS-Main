@@ -48,7 +48,7 @@ export function serverEnv(): ServerEnv {
   if (typeof window !== "undefined") {
     throw new Error(
       "serverEnv() was called in the browser. Server-only secrets must never " +
-        "reach client code — move this call into a route handler or server component.",
+        "reach client code. Move this call into a route handler or server component.",
     );
   }
 

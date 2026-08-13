@@ -1,26 +1,181 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+ * Celestra — I
+ *
+ * The page is built as a mission dossier: monospace indices, hairline rules,
+ * tabular data rows. Two rules keep it from drifting into generic-template
+ * territory:
+ *
+ *   1. Colour carries meaning. Cyan IS Kakşyā Śāstra, violet IS ED Cell.
+ *      Neither is used decoratively, so a track is readable at a glance.
+ *   2. Structure over ornament. Rules, indices and alignment do the work that
+ *      cards, shadows and gradients would otherwise be asked to do.
+ *
+ * Dark-only, deliberately. This is a space fest; a light variant would fight
+ * the subject matter.
+ */
+
+@theme {
+  --color-void: #05070e;
+  --color-deep: #090d1a;
+  --color-surface: #0e1424;
+  --color-edge: #1b2540;
+  --color-edge-bright: #2b3a63;
+
+  /* Kakşyā Śāstra */
+  --color-plasma: #4cc4f0;
+  /* ED Cell */
+  --color-nebula: #a97bf5;
+  /* Jointly hosted sessions */
+  --color-signal: #e3b473;
+  /* Visiting partner clubs (VJ Sahiti Vanam, XploR XR) */
+  --color-verdant: #5fd0a4;
+
+  --color-starlight: #eef2fb;
+  --color-haze: #a3b0cc;
+  --color-dust: #69769a;
+
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-33.333%, 0, 0);
   }
 }
 
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+  background-color: var(--color-void);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-void);
+  color: var(--color-starlight);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/*
+ * Star field: three layers at different densities. Pure CSS — no image
+ * request and no JavaScript on a page students will open on mobile data at
+ * the venue.
+ */
+.starfield {
+  background-image:
+    /* near field — brighter, sparser, larger tile */
+    radial-gradient(1.5px 1.5px at 12% 18%, rgb(255 255 255 / 0.85) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 67% 27%, rgb(210 232 255 / 0.7) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 84% 71%, rgb(255 255 255 / 0.6) 50%, transparent 50%),
+    radial-gradient(1.5px 1.5px at 31% 83%, rgb(255 255 255 / 0.65) 50%, transparent 50%),
+    /* far field — dimmer, denser, smaller tile, so the two drift apart */
+      radial-gradient(1px 1px at 38% 62%, rgb(190 215 255 / 0.5) 50%, transparent 50%),
+    radial-gradient(1px 1px at 92% 12%, rgb(255 255 255 / 0.45) 50%, transparent 50%),
+    radial-gradient(1px 1px at 5% 52%, rgb(255 255 255 / 0.4) 50%, transparent 50%),
+    radial-gradient(1px 1px at 55% 45%, rgb(210 232 255 / 0.35) 50%, transparent 50%),
+    radial-gradient(1px 1px at 74% 92%, rgb(255 255 255 / 0.3) 50%, transparent 50%);
+  background-size:
+    420px 420px,
+    420px 420px,
+    420px 420px,
+    420px 420px,
+    260px 260px,
+    260px 260px,
+    260px 260px,
+    260px 260px,
+    260px 260px;
+}
+
+/*
+ * Film grain. The single most effective thing for stopping a dark page from
+ * looking like flat CSS — it gives the black some tooth.
+ */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Section label: "§ 02 — EVENTS" */
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-dust);
+}
+
+/* Numbers in a manifest must line up in a column. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.marquee-track {
+  animation: drift 60s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .marquee-track {
+    animation: none;
+    transform: none;
+  }
+}
+
+::selection {
+  background-color: var(--color-plasma);
+  color: var(--color-void);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-plasma);
+  outline-offset: 3px;
+}
+
+/* Manifest rows use <details>, so the page works with JavaScript disabled. */
+details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details[open] .manifest-marker {
+  transform: rotate(45deg);
 }
