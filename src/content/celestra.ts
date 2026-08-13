@@ -48,7 +48,7 @@ export interface FestMeta {
 export const FEST: FestMeta = {
   name: "Celestra",
   edition: "I",
-  tagline: "The Space Fest",
+  tagline: "The Space & Entrepreneurship Fest",
   motto: "Where Vision Meets The Universe",
   hosts: ["Kakşyā Śāstra", "ED Cell"],
   institution: "VNRVJIET",

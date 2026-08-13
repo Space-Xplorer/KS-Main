@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono, Inter, Space_Grotesk } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { EVENTS, FEST } from "@/content/celestra";
 
@@ -44,7 +46,9 @@ export const metadata: Metadata = {
     "ED Cell",
     "VNRVJIET",
     "space fest",
+    "entrepreneurship fest",
     "aerospace",
+    "startup",
     "student events",
     "Hyderabad",
   ],
@@ -74,6 +78,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
