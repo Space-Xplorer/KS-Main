@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { FEE, FEST, REGISTRATION_URL } from "@/content/celestra";
+import { FEE, FEST, GROUP_OFFER_POSTER, REGISTRATION_URL } from "@/content/celestra";
 
 /** Hairline-separated data rows, the way a spec sheet lists facts. */
 const META: readonly { label: string; value: string }[] = [
@@ -110,8 +110,31 @@ export function Hero() {
           </a>
           <span className="text-dust font-mono text-[0.72rem] tracking-[0.1em]">
             {FEE.amount} {FEE.note}
-            <span className="text-dust/80 block">{FEE.laterNote}</span>
           </span>
+        </div>
+
+        <div className="border-plasma/40 mt-4 flex max-w-md items-center gap-4 border-l-2 py-1 pl-3">
+          <p className="text-plasma text-[0.85rem]">
+            <span className="font-mono text-[0.65rem] tracking-[0.18em] uppercase">
+              Group offer
+            </span>{" "}
+            {FEE.groupOffer}
+          </p>
+          <a
+            href={GROUP_OFFER_POSTER}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="border-edge hover:border-plasma group/offer relative block h-16 w-9 shrink-0 overflow-hidden border"
+            aria-label="Open the group offer poster full size"
+          >
+            <Image
+              src={GROUP_OFFER_POSTER}
+              alt="Group offer poster: get 3 passes and bring 1 free"
+              width={1080}
+              height={1920}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover/offer:scale-110"
+            />
+          </a>
         </div>
 
         <dl className="border-edge mt-20 grid max-w-3xl grid-cols-1 border-t sm:grid-cols-3">

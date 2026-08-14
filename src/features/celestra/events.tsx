@@ -63,9 +63,8 @@ export function Events() {
           </h2>
           <p className="text-haze mt-5 text-lg leading-relaxed">
             {EVENTS.length} events across {DAYS.length} days, run by both clubs.
-            One pass covers all of them: {FEE.amount} per person, {FEE.later}{" "}
-            after the early bird window. Register through the form, or scan the
-            QR on any poster.
+            One pass covers all of them: {FEE.amount} per person. Register
+            through the form, or scan the QR on any poster.
           </p>
         </header>
 
@@ -140,8 +139,8 @@ function EventCard({ event }: { event: FestEvent }) {
                 ? `Poster for ${event.title} (${event.posterTitle})`
                 : `Poster for ${event.title}`
             }
-            width={990}
-            height={1400}
+            width={1080}
+            height={1350}
             sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 24rem"
             className="h-auto w-full transition-transform duration-500 group-hover:scale-[1.03]"
           />
@@ -152,7 +151,7 @@ function EventCard({ event }: { event: FestEvent }) {
       ) : (
         // No poster supplied yet. A coloured plate keeps the grid even instead
         // of leaving a ragged hole.
-        <div className="border-edge flex aspect-[99/140] items-center justify-center border-b">
+        <div className="border-edge flex aspect-[4/5] items-center justify-center border-b">
           <span className="text-dust font-mono text-[0.7rem] tracking-[0.14em] uppercase">
             Poster coming soon
           </span>

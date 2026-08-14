@@ -14,16 +14,15 @@
  *   escape-room         18 Aug -> 19 Aug   (poster)
  *   battle-of-brands    18 Aug -> 19 Aug   (poster)
  *   investors-roulette  19 Aug -> 18 Aug   (poster)
+ *   guest-lecture        19 Aug -> 17 Aug   (updated poster, confirmed directly)
  *
- * guest-lecture ("Space Talk") is the one exception: its poster said 18 Aug,
- * but confirmed directly is Day 3 morning (matching the Annexure), so it
- * stayed on the Annexure's date/time. That poster's date should be treated as
- * wrong, which means the other three "poster wins" moves above are worth
- * double-checking rather than assumed correct.
+ * The updated posters (Aug 2026 batch) also confirmed the day-level grouping:
+ * the panel discussion and Space Talk run Day 1, every ED Cell
+ * (entrepreneurship) event runs Day 2, and every Kakşyā Śāstra (space) event
+ * runs Day 3.
  *
- * Two posters left fields blank in the artwork, so those values still come
- * from the Annexure: elevator-pitch (no date or venue printed) and
- * guest-lecture (no venue printed).
+ * One poster left a field blank in the artwork, so it still comes from the
+ * Annexure: elevator-pitch (no date or venue printed).
  *
  * Spelling: British English throughout ("organise", "defence", "programme").
  */
@@ -73,15 +72,13 @@ export const FEST: FestMeta = {
  * NOT free. An earlier version of this file said "Free entry", which was wrong
  * and is exactly the sort of claim that must never be guessed at.
  *
- * TODO(confirm): the form says "Registration Fee: 125/-  After 8 hours it will
- * be 149/-". That cutoff is relative to an unstated start time, so only the
- * base fee is shown. Confirm which price is currently live.
+ * The early bird window (₹125) has closed. ₹149 is the only price now live —
+ * do not resurrect the ₹125 figure without confirming the window reopened.
  */
 export const FEE = {
-  amount: "₹125",
-  later: "₹149",
+  amount: "₹149",
   note: "per person, covers all three days",
-  laterNote: "₹149 after the early bird window",
+  groupOffer: "Bring a crew of 4: buy 3 passes, the 4th is free.",
 } as const;
 
 /** Who the fest is for, per the form. Helps a visitor self-identify fast. */
@@ -352,10 +349,10 @@ export const EVENTS: readonly FestEvent[] = [
     id: "guest-lecture",
     title: "Space Talk",
     posterTitle: "Space Talk: Beyond Earth, Beyond Imagination",
-    day: "day-3",
-    time: "10:00 AM - 12:00 PM",
+    day: "day-1",
+    time: "2:00 PM onwards",
     club: "ks",
-    venue: "Dr. APJ Abdul Kalam Auditorium",
+    venue: "KS Auditorium",
     hook: "Beyond Earth. Beyond imagination.",
     speaker: "Bhudeb Chakravarti",
     topic: "Swarm Intelligence in Wireless Sensor Networks for Border Surveillance",
@@ -540,7 +537,7 @@ export const TRACK_RECORD: readonly { title: string; host: string }[] = [
 
 export const PARTNERS: readonly { role: string; names: readonly string[] }[] = [
   { role: "Event partners", names: ["VJ Sahiti Vanam", "XploR XR"] },
-  { role: "Organising partners", names: ["Cavalleros", "AIRBOTS"] },
+  { role: "Organising partners", names: ["Candleves", "AIRBOTS"] },
   { role: "Campaign partners", names: ["Student Tribe", "VJ Vibes"] },
   { role: "Coverage partners", names: ["Scintillate", "VJ Teatro"] },
 ];
@@ -633,3 +630,6 @@ export const CONTACT = {
 } as const;
 
 export const BANNER = "/posters/celestra-banner.webp";
+
+/** The "3+1" group offer promo, run as an Instagram story. */
+export const GROUP_OFFER_POSTER = "/posters/group-offer.webp";
