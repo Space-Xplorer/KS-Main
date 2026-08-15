@@ -4,12 +4,18 @@ import { assertDevRouteAllowed } from "@/lib/dev-guard";
 import { QR_TOKEN_VERSION } from "@/core/tokens/payload";
 import { signToken } from "@/core/tokens/sign";
 
+/** Matches supabase/seed.sql. The only event id this route will ever touch. */
+const LOCAL_SEED_EVENT_ID = "3f2504e0-4f89-41d3-9a0c-0305e82c3301";
+
 /**
  * Dev-harness route: issue one signed pass.
  *
  * Mirrors what the real walk-in desk will do (design doc §4.2), but online
  * and server-side rather than client-side-offline, because this exists to let
  * the SCANNER be tested before the walk-in desk UI is built.
+ *
+ * Pinned to the local seed event id — see /api/dev/provision for why. The
+ * real path is /api/checkins/issue.
  */
 export async function POST(request: Request): Promise<Response> {
   const guard = assertDevRouteAllowed(request);
@@ -23,6 +29,12 @@ export async function POST(request: Request): Promise<Response> {
   const name = typeof body?.name === "string" ? body.name.trim() : "";
   if (!eventId || name.length === 0) {
     return Response.json({ error: "eventId and name are required" }, { status: 400 });
+  }
+  if (eventId !== LOCAL_SEED_EVENT_ID) {
+    return Response.json(
+      { error: "this dev route only serves the local seed event; use /api/checkins/issue for real events" },
+      { status: 403 },
+    );
   }
 
   const admin = createAdminClient();

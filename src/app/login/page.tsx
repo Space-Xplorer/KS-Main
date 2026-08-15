@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/infra/supabase/server";
 import { LoginForm } from "@/features/auth/login-form";
 
-const DEFAULT_NEXT = "/dev/attendance";
+const DEFAULT_NEXT = "/scanner";
 
 /**
  * Staff sign-in. Not self-serve: accounts are provisioned ahead of the event

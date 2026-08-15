@@ -26,13 +26,21 @@ out on a batch email send. See `scripts/` once that script exists.
 
 The `/dev/attendance` harness and its `/api/dev/*` routes are test-only and
 **stay off by default everywhere**, including on Vercel — see
-`src/lib/dev-guard.ts`.
+`src/lib/dev-guard.ts`. The real path for staff is `/login` → `/scanner`,
+backed by `/api/checkins/provision`, `/api/checkins/issue` and
+`/api/checkins/sync` — all gated by a real signed-in staff account
+(`src/lib/require-staff.ts`), not a shared key. `/api/dev/*` additionally
+refuses to serve any event other than the local seed event, so leaving
+`ALLOW_DEV_HARNESS` on somewhere by mistake cannot leak a real signing
+secret.
 
 ---
 
 ## 1. Supabase Cloud project
 
-- [ ] Project created. (Already done — `ltrxivotfcgebawthszq`.)
+- [x] Project created — `ltrxivotfcgebawthszq`.
+- [x] Schema pushed (`supabase db push`).
+- [x] Real Celestra event + a freshly generated signing secret created.
 - [ ] Note the three values from **Project Settings → API**:
       - Project URL
       - anon / publishable key (safe to expose client-side — RLS protects it)
@@ -103,14 +111,19 @@ The `/dev/attendance` harness and its `/api/dev/*` routes are test-only and
 Being explicit about this so "it's deployed" doesn't get read as "it's
 finished":
 
-- **No auth, no admin UI.** Creating an event and its signing secret is a
-  manual Supabase Studio step (§1 above), not a form in the app.
-- **No real scanner UI.** `/dev/attendance` proves the pipeline works
-  end to end (see the conversation that built it), but it is not what a
-  volunteer should be handed at the gate.
+- **Staff login exists (`/login`), but no admin UI.** Creating an event and
+  its signing secret is still a manual Supabase Studio/script step (§1
+  above), and staff accounts are provisioned directly in `user_roles` — there
+  is no "create event" or "invite a volunteer" form in the app yet.
+- **`/scanner` is one combined screen**, not the separate walk-in-desk and
+  scanner routes the system design describes. Functionally complete (real
+  auth, real signed tokens, real offline-first sync) but not visually
+  differentiated by role yet.
+- **No offline app-shell precaching (service worker).** The scanner needs a
+  network connection for its *first* load; everything after that load works
+  offline. Provision on good network before doors open (see
+  `pre-event-provisioning.md`).
 - **No email sending yet.** The local script that generates QR codes and
   emails them is the next piece of work, not yet built.
-- **The real provisioning route is not authenticated.** `/api/checkins/sync`
-  is close to production-shape; a real provisioning endpoint (handing a
-  signing secret to a verified volunteer device) still needs real device
-  auth before it can replace `/api/dev/provision`.
+- **No admin reconciliation view.** Checking that every device synced is a
+  manual Supabase Studio query for now, not a dashboard.

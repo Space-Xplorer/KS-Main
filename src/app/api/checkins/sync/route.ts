@@ -1,4 +1,5 @@
 import { createAdminClient } from "@/infra/supabase/server";
+import { requireStaff } from "@/lib/require-staff";
 
 /**
  * Accepts a batch of check-ins from an offline device.
@@ -8,6 +9,12 @@ import { createAdminClient } from "@/infra/supabase/server";
  * so a record arriving twice must be a no-op, not a duplicate row. The
  * apply_checkin() trigger settles which scan actually wins per registration
  * (design doc §4.5) — this route's only job is to get rows in safely.
+ *
+ * requireStaff() matters here specifically: apply_checkin() picks the winner
+ * by EARLIEST scanned_at, so an unauthenticated caller could otherwise inject
+ * a fabricated early timestamp for someone else's registration id and get a
+ * real check-in flagged as the duplicate. A signed-in scanner already carries
+ * the session cookie needed for this check, so it costs the real flow nothing.
  */
 
 interface IncomingCheckin {
@@ -19,6 +26,9 @@ interface IncomingCheckin {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  const staff = await requireStaff();
+  if (!staff.ok) return staff.response;
+
   const body = (await request.json().catch(() => null)) as
     | { checkins?: unknown }
     | null;

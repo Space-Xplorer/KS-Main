@@ -24,8 +24,10 @@ then reject every pass. See [system design](../system-design.md) §4.4.
 
 Do this on **every** scanner and **every** walk-in desk, one at a time.
 
-- [ ] Open the app and sign in as a volunteer with event-staff access.
-- [ ] Open the device's assigned screen (`/scan` or `/walkin`).
+- [ ] Open the app and sign in at `/login` as a volunteer with event-staff access.
+- [ ] Open `/scanner` — walk-in issuing and scanning are one combined screen
+      for now (the split into separate `/scan` and `/walkin` routes described
+      elsewhere in these docs is still future work).
 - [ ] Wait for **"Provisioned ✓"**. This means it has:
       - pulled the pre-registered attendee list,
       - pulled the event signing secret,
